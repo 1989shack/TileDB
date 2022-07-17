@@ -52,9 +52,16 @@ extensions = [
 if readthedocs:
     # Mapping for linking between RTD subprojects.
     intersphinx_mapping = {
-        'tiledb': ('https://tiledb-inc-tiledb.readthedocs-hosted.com/en/%s/' % rtd_version, None),
-        'tiledb-py': ('https://tiledb-inc-tiledb.readthedocs-hosted.com/projects/python-api/en/%s/' % rtd_version, None)
+        'tiledb': (
+            f'https://tiledb-inc-tiledb.readthedocs-hosted.com/en/{rtd_version}/',
+            None,
+        ),
+        'tiledb-py': (
+            f'https://tiledb-inc-tiledb.readthedocs-hosted.com/projects/python-api/en/{rtd_version}/',
+            None,
+        ),
     }
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -77,13 +84,14 @@ release = '2.12.0'
 
 # Breathe extension configuration.
 tiledb_dir = '../../'
-doxygen_xml_dir = tiledb_dir + 'build/xml/'
+doxygen_xml_dir = f'{tiledb_dir}build/xml/'
 breathe_projects = {'TileDB-C': doxygen_xml_dir, 'TileDB-C++': doxygen_xml_dir}
 breathe_default_project = 'TileDB-C'
 breathe_projects_source = {
-    'TileDB-C': (tiledb_dir + 'tiledb/sm/c_api/', ['tiledb.h']),
-    'TileDB-C++': (tiledb_dir + 'tiledb/sm/cpp_api/', ['tiledb'])
+    'TileDB-C': (f'{tiledb_dir}tiledb/sm/c_api/', ['tiledb.h']),
+    'TileDB-C++': (f'{tiledb_dir}tiledb/sm/cpp_api/', ['tiledb']),
 }
+
 breathe_domain_by_file_pattern = {
     '*/c_api/tiledb.h': 'c',
     '*/cpp_api/tiledb': 'cpp'

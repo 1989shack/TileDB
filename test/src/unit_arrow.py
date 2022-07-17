@@ -12,10 +12,7 @@ from numpy.testing import assert_array_equal
 # ************************************************************************** #
 
 # python 2 vs 3 compatibility
-if sys.hexversion >= 0x3000000:
-    getchr = chr
-else:
-    getchr = unichr
+getchr = chr if sys.hexversion >= 0x3000000 else unichr
 
 def gen_chr(max, printable=False):
     while True:
@@ -39,11 +36,7 @@ def rand_datetime64_array(size, start=None, stop=None, dtype=None):
         start = np.datetime64(intmin + 1, units)
     else:
         start = np.datetime64(start)
-    if stop is None:
-        stop = np.datetime64(intmax, units)
-    else:
-        stop = np.datetime64(stop)
-
+    stop = np.datetime64(intmax, units) if stop is None else np.datetime64(stop)
     arr = np.random.randint(
         start.astype(dtype).astype(np.int64), stop.astype(dtype).astype(np.int64),
         size=size, dtype=np.int64
@@ -53,10 +46,10 @@ def rand_datetime64_array(size, start=None, stop=None, dtype=None):
     return arr.astype(dtype)
 
 def rand_utf8(size=5):
-    return u''.join([gen_chr(0xD7FF) for _ in range(0, size)])
+    return u''.join([gen_chr(0xD7FF) for _ in range(size)])
 
 def rand_ascii_bytes(size=5, printable=False):
-    return b''.join([gen_chr(127, printable).encode('utf-8') for _ in range(0,size)])
+    return b''.join([gen_chr(127, printable).encode('utf-8') for _ in range(size)])
 
 # ************************************************************************** #
 #           Test class                                                       #
@@ -116,10 +109,10 @@ class DataFactory():
     self.results[name] = pa.Array._import_from_c(c_array, c_schema)
 
   def check(self):
-    for key,val in self.data.items():
-      assert (key in self.results), "Expected key '{}' not found in results!".format(key)
+      for key,val in self.data.items():
+          assert (key in self.results), f"Expected key '{key}' not found in results!"
 
-      res_val = self.results[key]
-      assert_array_equal(val, res_val)
+          res_val = self.results[key]
+          assert_array_equal(val, res_val)
 
-    return True
+      return True

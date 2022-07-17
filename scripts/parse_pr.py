@@ -50,11 +50,7 @@ def parse_pr_body(
 
 
 def main():
-    if len(sys.argv) > 1:
-        body = sys.argv[1]
-    else:
-        body = sys.stdin.read()
-
+    body = sys.argv[1] if len(sys.argv) > 1 else sys.stdin.read()
     # If the reserved keyword "NO_HISTORY" is included anywhere
     # in the PR body, do not check it for validity
     if "NO_HISTORY" in body:
@@ -62,7 +58,7 @@ def main():
 
     header_descriptions = parse_pr_body(body)
     if not header_descriptions:
-        raise ValueError(f"Unable to locate history annotation in PR body")
+        raise ValueError("Unable to locate history annotation in PR body")
 
     print("HISTORY.md to be updated with the following additions:")
     for header, descriptions in header_descriptions.items():

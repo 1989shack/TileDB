@@ -33,10 +33,7 @@ def generate_sidebar(conf, conf_api):
     lang = 'en'
 
     def toctree(name):
-        lines.extend(['.. toctree::',
-                      '    :caption: %s' % name,
-                      '    :maxdepth: 1',
-                      ''])
+        lines.extend(['.. toctree::', f'    :caption: {name}', '    :maxdepth: 1', ''])
 
     def endl():
         lines.append('')
@@ -45,7 +42,7 @@ def generate_sidebar(conf, conf_api):
         if conf_api == 'tiledb':
             args = desc, link
         else:
-            args = desc, '%s/%s/%s/%s.html' % (url_base, lang, version, link)
+            args = desc, f'{url_base}/{lang}/{version}/{link}.html'
 
         lines.append('    %s <%s>' % args)
 
@@ -64,7 +61,7 @@ def generate_sidebar(conf, conf_api):
             lines.append('    %s API <%s>' % args)
 
     def write_api_url(desc, url):
-        lines.append('    %s API <%s>' % (desc, url))
+        lines.append(f'    {desc} API <{url}>')
 
     #
     # Specify the sidebar contents here

@@ -166,8 +166,7 @@ if __name__ == "__main__":
 
     root_dir = os.path.abspath(sys.argv[1])
     print(f"Checking for heap memory API violations in {root_dir}")
-    violations = list(iter_dir_violations(root_dir))
-    if violations:
+    if violations := list(iter_dir_violations(root_dir)):
         this_filename = os.path.basename(__file__)
         for violation in violations:
             print(

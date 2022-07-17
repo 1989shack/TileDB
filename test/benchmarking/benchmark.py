@@ -40,7 +40,7 @@ class ProgressBar(threading.Thread):
         chars = ['-', '\\', '|', '/']
         i = 0
         while self.running:
-            sys.stdout.write('\r{}'.format(chars[i]))
+            sys.stdout.write(f'\r{chars[i]}')
             sys.stdout.flush()
             i = (i + 1) % 4
             time.sleep(0.2)
@@ -93,15 +93,14 @@ def list_benchmarks(show=False):
     executables = glob.glob(os.path.join(benchmark_build_dir, 'bench_*'))
     names = []
     for exe in sorted(executables):
-        is_exec = os.path.isfile(exe) and os.access(exe, os.X_OK)
-        if is_exec:
+        if is_exec := os.path.isfile(exe) and os.access(exe, os.X_OK):
             name = os.path.basename(exe)
             names.append(name)
 
     if show:
-        print('{} benchmarks:'.format(len(names)))
+        print(f'{len(names)} benchmarks:')
         for name in names:
-            print('  {}'.format(name))
+            print(f'  {name}')
 
     return names
 
@@ -115,9 +114,10 @@ def build_benchmarks(args):
     p = ProgressBar()
     try:
         subprocess.check_output(
-            ['cmake', '-DCMAKE_PREFIX_PATH={}'.format(tiledb_path),
-             benchmark_src_dir],
-            cwd=benchmark_build_dir)
+            ['cmake', f'-DCMAKE_PREFIX_PATH={tiledb_path}', benchmark_src_dir],
+            cwd=benchmark_build_dir,
+        )
+
         subprocess.check_output(['make', '-j4'], cwd=benchmark_build_dir)
     finally:
         p.stop()
@@ -125,8 +125,7 @@ def build_benchmarks(args):
 
 def print_results(results):
     "Prints benchmark timing results."
-    print('Reporting minimum time of {} runs for each benchmark:'.format(
-        NUM_TRIALS))
+    print(f'Reporting minimum time of {NUM_TRIALS} runs for each benchmark:')
     print('-' * 93)
     for bench in sorted(results.keys()):
         print('{:<30s}{:>60d} ms'.format(bench, min(results[bench])))
@@ -150,13 +149,13 @@ def run_benchmarks(args):
         for b in benchmarks:
             exe = os.path.join(benchmark_build_dir, b)
             if not os.path.exists(exe):
-                print('Error: no benchmark named "{}"'.format(b))
+                print(f'Error: no benchmark named "{b}"')
                 continue
 
             subprocess.check_output([exe, 'setup'], cwd=benchmark_build_dir)
 
             times_ms = []
-            for i in range(0, NUM_TRIALS):
+            for _ in range(NUM_TRIALS):
                 sync_fs()
                 drop_fs_caches()
                 output_json = subprocess.check_output([exe, 'run'],
@@ -186,8 +185,7 @@ def main():
     args = parser.parse_args()
 
     if find_tiledb_path(args) is None:
-        print('Error: TileDB installation not found in directory \'{}\''.format(
-            args.tiledb))
+        print(f"Error: TileDB installation not found in directory \'{args.tiledb}\'")
         sys.exit(1)
 
     build_benchmarks(args)
