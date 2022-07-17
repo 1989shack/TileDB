@@ -74,9 +74,8 @@ def find_prs(gh: Github, head: str, base: Optional[str] = None) -> Dict[int, str
     prs = {}
     for commit in comparison.commits:
         for pr in commit.get_pulls():
-            backport = re.match(r"^backport-(\d+)", pr.head.ref)
-            if backport:
-                pr = repo.get_pull(int(backport.group(1)))
+            if backport := re.match(r"^backport-(\d+)", pr.head.ref):
+                pr = repo.get_pull(int(backport[1]))
             # If the pr is open or the reserved keyword "NO_HISTORY" is included anywhere
             # in the PR body, ignore the PR
             if pr.state != "open" and pr.body and "NO_HISTORY" not in pr.body:
